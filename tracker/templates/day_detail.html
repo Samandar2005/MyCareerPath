@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h4 class="m-0">Kun {{ day.day_number }}: {{ day.title }}</h4>
+                <span class="badge bg-light text-dark">{{ day.get_difficulty_display }}</span>
+            </div>
+            <div class="card-body p-4">
+                
+                <h5 class="text-primary"><i class="bi bi-list-task"></i> Vazifa Tavsifi</h5>
+                <p class="lead">{{ day.description }}</p>
+                
+                {% if day.video_url %}
+                <div class="alert alert-info d-flex align-items-center">
+                    <i class="bi bi-youtube fs-3 me-3"></i>
+                    <div>
+                        <strong>Video Darslik:</strong><br>
+                        <a href="{{ day.video_url }}" target="_blank" class="alert-link">Darsni ko'rish uchun bu yerga bosing</a>
+                    </div>
+                </div>
+                {% endif %}
+
+                <hr class="my-4">
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Hozirgi Holat:</label>
+                            <select name="status" class="form-select">
+                                <option value="pending" {% if day.status == 'pending' %}selected{% endif %}>⏳ Kutilmoqda</option>
+                                <option value="in_progress" {% if day.status == 'in_progress' %}selected{% endif %}>🔥 Jarayonda</option>
+                                <option value="completed" {% if day.status == 'completed' %}selected{% endif %}>✅ Tugatildi</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Sarflangan Vaqt (soat):</label>
+                            <input type="number" step="0.5" name="time_spent" class="form-control" value="{{ day.time_spent }}">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">📝 Kunlik Xulosa (Eslatmalar):</label>
+                        <textarea name="notes" class="form-control" rows="5" placeholder="Bugun nimalarni o'rgandingiz? Kodda qanday xatoliklar chiqdi?">{{ day.notes|default_if_none:"" }}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Orqaga</a>
+                        <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Saqlash va Chiqish</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
